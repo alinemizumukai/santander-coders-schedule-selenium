@@ -183,4 +183,64 @@ public class ScheduleTest {
         WebElement editElement = driver.findElement(By.xpath("//td[text()='cyang']//following-sibling::td/a[text()='Edit']"));
         assertNotNull(editElement);
     }
+
+    @Test
+    @Order(3)
+    public void editarNomeESenhaDeUmUsuarioJaCadastrado_deveTerSucesso(){
+        WebElement editElement = driver.findElement(By.xpath("//td[text()='crisyang']//following-sibling::td/a[text()='Edit']"));
+        editElement.click();
+
+        String newName = "Miranda Bailey";
+        WebElement name = driver.findElement(By.id("name"));
+        name.clear();
+        name.sendKeys(newName);
+
+        driver.findElement(By.id("password")).sendKeys("mb-123");
+        driver.findElement(By.xpath("//form/button")).click();
+
+        WebElement element = driver.findElement(
+                By.xpath("//td[text()='crisyang']//preceding-sibling::td")
+        );
+        assertNotNull(element);
+        assertEquals(newName, element.getText());
+    }
+
+    @Test
+    @Order(3)
+    public void editarSomenteNomeDeUmUsuarioJaCadastrado_naoPermitido(){
+        WebElement editElement = driver.findElement(By.xpath("//td[text()='cyang']//following-sibling::td/a[text()='Edit']"));
+        editElement.click();
+
+        String newName = "Richard Webber";
+        WebElement name = driver.findElement(By.id("name"));
+        name.clear();
+        name.sendKeys(newName);
+        driver.findElement(By.xpath("//form/button")).click();
+
+        WebElement element = driver.findElement(
+                By.className("user-form-error")
+        );
+        assertNotNull(element);
+        assertEquals("não deve estar em branco", element.getText());
+    }
+
+    @Test
+    @Order(3)
+    public void editarDadosDeUmUsuarioJaCadastrado_campoUsernameDeveSerReadonly(){
+        WebElement editElement = driver.findElement(By.xpath("//td[text()='cyang']//following-sibling::td/a[text()='Edit']"));
+        editElement.click();
+
+        WebElement username = driver.findElement(By.id("username"));
+        assertTrue(username.getAttribute("readOnly").equals("true"));
+    }
+
+    @Test
+    @Order(3)
+    public void editarDadosDeUmUsuarioJaCadastrado_campoPasswordDeveIniciarVazio(){
+        WebElement editElement = driver.findElement(By.xpath("//td[text()='cyang']//following-sibling::td/a[text()='Edit']"));
+        editElement.click();
+
+        WebElement password = driver.findElement(By.id("password"));
+        assertEquals("", password.getText());
+    }
 }
